@@ -1,0 +1,84 @@
+version: 2
+
+# ── Source definitions ────────────────────────────────────────────────────────
+# Tells dbt where the raw tables live in Athena
+
+sources:
+  - name: raw_olist
+    database: AwsDataCatalog
+    schema: raw_olist
+    tables:
+      - name: orders_dataset
+      - name: customers_dataset
+      - name: order_items_dataset
+      - name: order_payments_dataset
+      - name: order_reviews_dataset
+      - name: products_dataset
+      - name: sellers_dataset
+      - name: geolocation_dataset
+      - name: product_category_name_translation
+
+# ── Model tests ───────────────────────────────────────────────────────────────
+# dbt runs these automatically on `dbt test`
+
+models:
+  - name: stg_orders
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+      - name: status
+        tests:
+          - accepted_values:
+              values: ['delivered', 'shipped', 'canceled', 'processing', 'invoiced', 'approved']
+
+  - name: stg_customers
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_order_items
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+      - name: price
+        tests:
+          - not_null
+
+  - name: stg_order_payments
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+      - name: payment_type
+        tests:
+          - accepted_values:
+              values: ['credit_card', 'boleto', 'voucher', 'debit_card']
+
+  - name: stg_order_reviews
+    columns:
+      - name: review_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_products
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_sellers
+    columns:
+      - name: seller_id
+        tests:
+          - unique
+          - not_null

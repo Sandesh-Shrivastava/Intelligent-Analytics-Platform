@@ -1,0 +1,13 @@
+pandas
+numpy
+boto3
+python-dotenv
+dbt-athena-community
+streamlit
+plotly
+pyathena
+xgboost
+shap
+scikit-learn
+mlflow
+chromadb
