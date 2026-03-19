@@ -3,7 +3,7 @@ numpy
 boto3
 python-dotenv
 dbt-athena-community
-streamlit
+streamlit>=1.30.0
 plotly
 pyathena
 xgboost
@@ -12,3 +12,4 @@ scikit-learn
 mlflow
 chromadb
 groq
+protobuf<=3.20.3
