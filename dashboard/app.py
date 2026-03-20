@@ -16,6 +16,7 @@ import streamlit as st
 warnings.filterwarnings("ignore")
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from notebooks.athena_helper import query
+from dashboard.theme import get_theme
 from ai.text_to_sql import generate_sql, get_groq_client
 from ai.rag_pipeline import (
     generate_insights, build_vector_store,
@@ -31,311 +32,17 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── Premium Dark Theme CSS ────────────────────────────────────────────────────
+# ── Dynamic Theme & CSS ───────────────────────────────────────────────────────
 
-st.markdown("""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+if "is_dark_mode" not in st.session_state:
+    st.session_state.is_dark_mode = True
 
-    /* ── Global ── */
-    html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
-    }
-    .stApp {
-        background: linear-gradient(135deg, #0a0f1e 0%, #0f172a 50%, #0a0f1e 100%);
-    }
+with st.sidebar:
+    st.session_state.is_dark_mode = st.toggle("🌙 Dark Mode Toggle", value=st.session_state.is_dark_mode)
 
-    /* ── Sidebar ── */
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #0d1424 0%, #111827 100%);
-        border-right: 1px solid rgba(99, 102, 241, 0.15);
-    }
-    [data-testid="stSidebar"] * {
-        color: #e2e8f0 !important;
-    }
+CSS, CHART_LAYOUT, CHART_LAYOUT_ROTATED, TEXT_COLOR = get_theme(st.session_state.is_dark_mode)
+st.markdown(CSS, unsafe_allow_html=True)
 
-    /* ── Main content area ── */
-    .main .block-container {
-        padding-top: 1.5rem;
-        padding-bottom: 2rem;
-        max-width: 1400px;
-    }
-
-    /* ── KPI metric cards ── */
-    [data-testid="stMetric"] {
-        background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.08) 100%);
-        border: 1px solid rgba(99,102,241,0.25);
-        border-radius: 16px;
-        padding: 20px 16px;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    [data-testid="stMetric"]:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 32px rgba(99,102,241,0.2);
-    }
-    [data-testid="stMetricLabel"] {
-        color: #94a3b8 !important;
-        font-size: 0.78rem !important;
-        font-weight: 500 !important;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-    }
-    [data-testid="stMetricValue"] {
-        color: #f1f5f9 !important;
-        font-size: 1.7rem !important;
-        font-weight: 700 !important;
-        letter-spacing: -0.02em;
-    }
-
-    /* ── Tabs ── */
-    [data-testid="stTabs"] [role="tablist"] {
-        background: rgba(15,23,42,0.8);
-        border-radius: 12px;
-        padding: 4px;
-        border: 1px solid rgba(99,102,241,0.15);
-        gap: 4px;
-    }
-    [data-testid="stTabs"] [role="tab"] {
-        border-radius: 8px !important;
-        font-size: 0.88rem !important;
-        font-weight: 600 !important;
-        color: #64748b !important;
-        padding: 8px 20px !important;
-        transition: all 0.2s ease !important;
-    }
-    [data-testid="stTabs"] [role="tab"][aria-selected="true"] {
-        background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
-        color: #ffffff !important;
-        box-shadow: 0 4px 12px rgba(99,102,241,0.35) !important;
-    }
-
-    /* ── Headers ── */
-    h1 {
-        background: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: 800 !important;
-        letter-spacing: -0.03em;
-        font-size: 2rem !important;
-    }
-    h2, h3 {
-        color: #e2e8f0 !important;
-        font-weight: 700 !important;
-        letter-spacing: -0.02em;
-    }
-
-    /* ── Divider ── */
-    hr {
-        border-color: rgba(99,102,241,0.15) !important;
-    }
-
-    /* ── Dataframe ── */
-    [data-testid="stDataFrame"] {
-        border: 1px solid rgba(99,102,241,0.2);
-        border-radius: 12px;
-        overflow: hidden;
-    }
-
-    /* ── Text input ── */
-    [data-testid="stTextInput"] input {
-        background: rgba(30,41,59,0.8) !important;
-        border: 1px solid rgba(99,102,241,0.3) !important;
-        border-radius: 10px !important;
-        color: #f1f5f9 !important;
-        font-size: 0.95rem !important;
-    }
-    [data-testid="stTextInput"] input:focus {
-        border-color: #6366f1 !important;
-        box-shadow: 0 0 0 2px rgba(99,102,241,0.2) !important;
-    }
-
-    /* ── Buttons ── */
-    [data-testid="stButton"] button {
-        background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
-        border: none !important;
-        border-radius: 8px !important;
-        color: white !important;
-        font-weight: 600 !important;
-        font-size: 0.82rem !important;
-        transition: all 0.2s ease !important;
-    }
-    [data-testid="stButton"] button:hover {
-        transform: translateY(-1px) !important;
-        box-shadow: 0 4px 16px rgba(99,102,241,0.4) !important;
-        opacity: 0.92 !important;
-    }
-
-    /* ── Radio ── */
-    [data-testid="stRadio"] label {
-        color: #94a3b8 !important;
-        font-size: 0.9rem !important;
-    }
-
-    /* ── Selectbox ── */
-    [data-testid="stSelectbox"] > div > div {
-        background: rgba(30,41,59,0.8) !important;
-        border: 1px solid rgba(99,102,241,0.3) !important;
-        border-radius: 10px !important;
-        color: #f1f5f9 !important;
-    }
-
-    /* ── Spinner ── */
-    [data-testid="stSpinner"] {
-        color: #6366f1 !important;
-    }
-
-    /* ── Success/Error alerts ── */
-    [data-testid="stSuccess"] {
-        background: rgba(16,185,129,0.1) !important;
-        border: 1px solid rgba(16,185,129,0.3) !important;
-        border-radius: 12px !important;
-        color: #6ee7b7 !important;
-    }
-    [data-testid="stAlert"] {
-        border-radius: 12px !important;
-    }
-
-    /* ── Section card wrapper ── */
-    .section-card {
-        background: rgba(30, 41, 59, 0.6);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(99, 102, 241, 0.15);
-        border-radius: 16px;
-        padding: 24px;
-        margin-bottom: 20px;
-    }
-
-    /* ── Stat badge ── */
-    .stat-badge {
-        display: inline-block;
-        background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.15));
-        border: 1px solid rgba(99,102,241,0.3);
-        border-radius: 8px;
-        padding: 4px 12px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: #a5b4fc;
-        margin: 2px;
-    }
-
-    /* ── Hero banner ── */
-    .hero-banner {
-        background: linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(139,92,246,0.1) 50%, rgba(6,182,212,0.08) 100%);
-        border: 1px solid rgba(99,102,241,0.2);
-        border-radius: 20px;
-        padding: 28px 32px;
-        margin-bottom: 28px;
-        position: relative;
-        overflow: hidden;
-    }
-    .hero-banner::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -20%;
-        width: 400px;
-        height: 400px;
-        background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
-        border-radius: 50%;
-    }
-    .hero-title {
-        font-size: 1.6rem;
-        font-weight: 800;
-        color: #f1f5f9;
-        letter-spacing: -0.03em;
-        margin: 0;
-    }
-    .hero-subtitle {
-        color: #64748b;
-        font-size: 0.9rem;
-        margin-top: 4px;
-        margin-bottom: 0;
-    }
-    .hero-pill {
-        display: inline-block;
-        background: rgba(99,102,241,0.15);
-        border: 1px solid rgba(99,102,241,0.3);
-        border-radius: 999px;
-        padding: 3px 12px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: #818cf8;
-        margin-right: 6px;
-        margin-top: 12px;
-    }
-
-    /* ── Recommendation card ── */
-    .rec-card {
-        background: rgba(30,41,59,0.7);
-        border: 1px solid rgba(99,102,241,0.2);
-        border-radius: 12px;
-        padding: 12px 16px;
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.2s ease;
-    }
-    .rec-card:hover {
-        border-color: rgba(99,102,241,0.5);
-        background: rgba(99,102,241,0.1);
-    }
-
-    /* ── Scrollbar ── */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: rgba(15,23,42,0.5); }
-    ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.4); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.7); }
-
-    /* ── Caption / small text ── */
-    small, .stCaption, [data-testid="stCaption"] {
-        color: #64748b !important;
-        font-size: 0.8rem !important;
-    }
-
-    /* ── Code block ── */
-    [data-testid="stCode"] {
-        background: rgba(15,23,42,0.9) !important;
-        border: 1px solid rgba(99,102,241,0.2) !important;
-        border-radius: 10px !important;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-
-# ── Chart theme helper ────────────────────────────────────────────────────────
-
-CHART_LAYOUT = dict(
-    plot_bgcolor="rgba(0,0,0,0)",
-    paper_bgcolor="rgba(0,0,0,0)",
-    font=dict(family="Inter", color="#94a3b8", size=12),
-    title_font=dict(color="#e2e8f0", size=14, family="Inter"),
-    legend=dict(
-        bgcolor="rgba(15,23,42,0.8)",
-        bordercolor="rgba(99,102,241,0.2)",
-        borderwidth=1,
-        font=dict(color="#94a3b8"),
-    ),
-    xaxis=dict(
-        gridcolor="rgba(99,102,241,0.08)",
-        linecolor="rgba(99,102,241,0.15)",
-        tickcolor="rgba(99,102,241,0.15)",
-        tickfont=dict(color="#64748b"),
-        title_font=dict(color="#94a3b8"),
-    ),
-    yaxis=dict(
-        gridcolor="rgba(99,102,241,0.08)",
-        linecolor="rgba(99,102,241,0.15)",
-        tickcolor="rgba(99,102,241,0.15)",
-        tickfont=dict(color="#64748b"),
-        title_font=dict(color="#94a3b8"),
-    ),
-    margin=dict(t=40, b=40, l=20, r=20),
-)
-
-
-# ── Rotated-x variant of the chart layout ─────────────────────────────────
-CHART_LAYOUT_ROTATED = {**CHART_LAYOUT, "xaxis": {**CHART_LAYOUT["xaxis"], "tickangle": 45}}
 
 
 # ── Cached data loaders ───────────────────────────────────────────────────────
@@ -465,7 +172,7 @@ with st.sidebar:
     st.markdown("""
     <div style='padding: 8px 0 20px 0;'>
         <div style='font-size: 2rem; margin-bottom: 8px;'>📊</div>
-        <div style='font-size: 1.1rem; font-weight: 800; color: #f1f5f9; letter-spacing: -0.02em;'>
+        <div style='font-size: 1.1rem; font-weight: 800; color: {TEXT_COLOR}; letter-spacing: -0.02em;'>
             Analytics Platform
         </div>
         <div style='font-size: 0.75rem; color: #475569; margin-top: 2px;'>
@@ -607,7 +314,7 @@ with tab1:
                 labels={"customer_segment": "", "customers": "Customers", "avg_revenue": "Avg Revenue ($)"},
                 text="customers",
             )
-            fig.update_traces(textfont=dict(color="#f1f5f9"), textposition="outside")
+            fig.update_traces(textfont=dict(color=TEXT_COLOR), textposition="outside")
             fig.update_layout(**CHART_LAYOUT, coloraxis_showscale=False)
             st.plotly_chart(fig, use_container_width=True)
 
@@ -623,7 +330,7 @@ with tab1:
                 labels={"customer_state": "", "revenue": "Revenue ($)"},
                 text=states.head(10)["revenue"].apply(lambda x: f"${x:,.0f}"),
             )
-            fig.update_traces(textfont=dict(color="#f1f5f9", size=10), textposition="outside")
+            fig.update_traces(textfont=dict(color=TEXT_COLOR, size=10), textposition="outside")
             fig.update_layout(**CHART_LAYOUT, coloraxis_showscale=False)
             st.plotly_chart(fig, use_container_width=True)
 
@@ -739,7 +446,7 @@ with tab3:
                 hole=0.55,
             )
             fig.update_traces(
-                textfont=dict(color="#f1f5f9", size=13),
+                textfont=dict(color=TEXT_COLOR, size=13),
                 marker=dict(line=dict(color="rgba(0,0,0,0.3)", width=2)),
             )
             fig.update_layout(
@@ -775,7 +482,7 @@ with tab3:
                 labels={"customer_segment": "", "avg_clv": "Avg CLV ($)"},
                 text=clv["avg_clv"].apply(lambda x: f"${x:.0f}"),
             )
-            fig.update_traces(textfont=dict(color="#f1f5f9"), textposition="outside")
+            fig.update_traces(textfont=dict(color=TEXT_COLOR), textposition="outside")
             fig.update_layout(**CHART_LAYOUT, coloraxis_showscale=False)
             st.plotly_chart(fig, use_container_width=True)
 
@@ -832,7 +539,7 @@ with tab4:
                     st.markdown(f"""
                     <div class="rec-card">
                         <span style='color:#22c55e; font-size:1rem;'>✓</span>
-                        <span style='color:#e2e8f0; font-size:0.88rem; font-weight:500;'>{cat.replace("_"," ").title()}</span>
+                        <span style='color:{TEXT_COLOR}; font-size:0.88rem; font-weight:500;'>{cat.replace("_"," ").title()}</span>
                     </div>
                     """, unsafe_allow_html=True)
 
@@ -860,7 +567,7 @@ with tab4:
                     <div class="rec-card">
                         <span style='font-size:1.1rem;'>{medal}</span>
                         <div style='flex:1;'>
-                            <div style='color:#e2e8f0; font-size:0.88rem; font-weight:600;'>{cat.replace("_"," ").title()}</div>
+                            <div style='color:{TEXT_COLOR}; font-size:0.88rem; font-weight:600;'>{cat.replace("_"," ").title()}</div>
                             <div style='color:#475569; font-size:0.75rem;'>Similarity score: {score:.2f}</div>
                         </div>
                     </div>
