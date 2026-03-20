@@ -6,6 +6,8 @@
 ![XGBoost](https://img.shields.io/badge/XGBoost-189fdd?style=for-the-badge)
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)
 
+🔴 **Live Application:** [https://intelligent-analytics-platform-rtaxz3a8dtnyafd32b9wco.streamlit.app](https://intelligent-analytics-platform-rtaxz3a8dtnyafd32b9wco.streamlit.app)
+
 An end-to-end, FAANG-ready data product built for an e-commerce business. This platform bridges the gap between raw data and actionable business intelligence by combining Data Engineering, Data Analytics, Machine Learning, and Generative AI into a single, cohesive web application.
 
 ---
