@@ -226,7 +226,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
     "📊  Overview",
     "🤖  Ask AI",
     "🎯  ML Insights",
-    "🛍️  Recommender",
+    "🛒  Buying History",
 ])
 
 
