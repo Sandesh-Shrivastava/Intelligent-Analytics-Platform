@@ -77,3 +77,20 @@ Once your environment is set up and your AWS infrastructure contains the necessa
 streamlit run dashboard/app.py
 ```
 The dashboard will be available in your browser at `http://localhost:8501`.
+
+---
+
+## 🔮 Future Enhancements
+
+As the architecture and business requirements evolve, the following features are slated for future development:
+
+1. **Multi-Format Data Upload Engine (Drag & Drop):** 
+   A robust, real-time file upload component allowing users to securely drag-and-drop new datasets. Tabular formats (CSVs, Excel) will seamlessly auto-update the dbt transformations and Plotly charts, while unstructured files (PDFs, Word Docs) will be automatically vectorized and embedded into the ChromaDB RAG database for the Llama 3 Agent to analyze.
+2. **Expanded Advanced Dataviz Dashboards:** 
+   Scaling out the "Business Overview" tab by integrating real-time geospatial heatmaps, granular "Delivery Logistics Performance" visualizations, and strict "Payment Method" breakdowns to create a true 360-degree command center.
+3. **Real-Time Data Streaming (Apache Kafka):** 
+   Upgrading the current batch-processing architecture by injecting a live event stream. This will enable sub-second latency for transaction logging, meaning the Streamlit dashboard will update its KPIs precisely as orders happen live.
+4. **Automated Anomaly Detection & Slack Alerts:** 
+   Deploying an AWS Lambda cron job that leverages an Isolation Forest ML model against the live revenue data. If a mathematically abnormal dip in sales (or spike in churn) is detected, the Llama agent will automatically triage the issue and ping a detailed alert directly to the company's Slack/Microsoft Teams channel.
+5. **Autonomous Multi-Agent AI System (LangGraph):** 
+   Evolving the "Ask AI" router into a multi-agent framework where a designated "Data Engineer Agent" writes and pulls raw SQL, while a secure "Data Scientist Agent" writes sandbox Python code to proactively render completely custom Seaborn/Plotly charts on the fly.
