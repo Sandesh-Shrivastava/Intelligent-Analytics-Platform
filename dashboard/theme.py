@@ -32,6 +32,14 @@ def get_theme(is_dark: bool):
         html, body, [class*="css"] {{ font-family: 'Inter', sans-serif; }}
         
         .stApp {{ background: {bg_app} !important; }}
+        [data-testid="block-container"] {{ padding-top: 3rem !important; padding-bottom: 1rem !important; max-width: 100% !important; padding-left: 2.5rem !important; padding-right: 2.5rem !important; }}
+        
+        /* Header Redesign */
+        [data-testid="stHeader"] {{ background: transparent !important; }}
+        #stDecoration {{ display: none !important; }} /* Removes the red gradient line */
+        .stDeployButton {{ display: none !important; }} /* Hides Streamlit's "Deploy/Manage" buttons */
+        [data-testid="stToolbar"] {{ right: 1rem; }}
+        
         [data-testid="stSidebar"] {{ background: {bg_sidebar} !important; border-right: 1px solid {border}; }}
         [data-testid="stSidebar"] * {{ color: {text_main} !important; }}
         
@@ -47,12 +55,14 @@ def get_theme(is_dark: bool):
         [data-testid="stTextInput"] input, [data-testid="stSelectbox"] > div > div {{
             background: {txt_bg} !important; border: 1px solid {border} !important; border-radius: 10px !important; color: {text_main} !important;
         }}
-        [data-testid="stButton"] button {{ background: linear-gradient(135deg, #6366f1, #8b5cf6) !important; border-radius: 8px !important; color: white !important; font-weight: 600 !important; border: none !important; }}
+        [data-testid="stButton"] button {{ background: transparent !important; border-radius: 8px !important; color: {text_main} !important; font-weight: 600 !important; border: 1px solid {border} !important; font-size: 1rem !important; padding: 10px 20px !important; min-height: 45px !important; }}
         [data-testid="stRadio"] label, [data-testid="stRadio"] div, p, span {{ color: {text_main} !important; }}
         
-        [data-testid="stTabs"] [role="tablist"] {{ background: {tab_bg}; border-radius: 12px; padding: 4px; border: 1px solid {border}; }}
-        [data-testid="stTabs"] [role="tab"] {{ color: {text_muted} !important; font-weight: 600 !important; }}
-        [data-testid="stTabs"] [role="tab"][aria-selected="true"] {{ background: linear-gradient(135deg, #6366f1, #8b5cf6) !important; color: #ffffff !important; }}
+        [data-testid="stTabs"] [role="tablist"] {{ background: transparent !important; padding: 0 !important; border: none !important; gap: 30px !important; }}
+        [data-testid="stTabs"] [role="tab"] {{ background: transparent !important; border: none !important; padding-bottom: 15px !important; }}
+        [data-testid="stTabs"] [role="tab"] p {{ font-size: 1.5rem !important; font-weight: 700 !important; color: {text_muted} !important; letter-spacing: -0.02em !important; margin: 0; }}
+        [data-testid="stTabs"] [role="tab"][aria-selected="true"] {{ background: transparent !important; border-bottom: 4px solid #6366f1 !important; border-radius: 0 !important; }}
+        [data-testid="stTabs"] [role="tab"][aria-selected="true"] p {{ color: {text_hdr} !important; }}
         
         .section-card, .rec-card {{ background: {txt_bg}; border: 1px solid {border}; border-radius: 16px; padding: 24px; }}
         .rec-card {{ padding: 12px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; border-radius: 12px; }}

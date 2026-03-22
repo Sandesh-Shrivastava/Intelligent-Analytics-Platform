@@ -37,8 +37,6 @@ st.set_page_config(
 if "is_dark_mode" not in st.session_state:
     st.session_state.is_dark_mode = True
 
-with st.sidebar:
-    st.session_state.is_dark_mode = st.toggle("🌙 Dark Mode Toggle", value=st.session_state.is_dark_mode)
 
 CSS, CHART_LAYOUT, CHART_LAYOUT_ROTATED, TEXT_COLOR = get_theme(st.session_state.is_dark_mode)
 st.markdown(CSS, unsafe_allow_html=True)
@@ -166,59 +164,27 @@ def load_rag_collection():
         return build_vector_store(insights)
 
 
-# ── Sidebar ───────────────────────────────────────────────────────────────────
 
-with st.sidebar:
-    st.markdown("""
-    <div style='padding: 8px 0 20px 0;'>
-        <div style='font-size: 2rem; margin-bottom: 8px;'>📊</div>
-        <div style='font-size: 1.1rem; font-weight: 800; color: {TEXT_COLOR}; letter-spacing: -0.02em;'>
-            Analytics Platform
-        </div>
-        <div style='font-size: 0.75rem; color: #475569; margin-top: 2px;'>
-            Intelligent Customer Intelligence
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
 
-    st.markdown("""
-    <div style='margin-bottom: 20px;'>
-        <div style='font-size: 0.7rem; font-weight: 700; color: #475569; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px;'>TECH STACK</div>
-        <div style='display: flex; flex-direction: column; gap: 6px;'>
-            <div style='display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: #94a3b8;'>
-                <span style='color: #f59e0b;'>☁️</span> Amazon S3 + Athena
-            </div>
-            <div style='display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: #94a3b8;'>
-                <span style='color: #10b981;'>🔄</span> dbt Transformations
-            </div>
-            <div style='display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: #94a3b8;'>
-                <span style='color: #6366f1;'>🤖</span> XGBoost ML Models
-            </div>
-            <div style='display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: #94a3b8;'>
-                <span style='color: #8b5cf6;'>🧠</span> Llama 3.3 (Groq)
-            </div>
-            <div style='display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: #94a3b8;'>
-                <span style='color: #06b6d4;'>📊</span> Streamlit Dashboard
-            </div>
+
+# ── Title ─────────────────────────────────────────────────────────────────────
+
+st.markdown("""
+<div style='display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 30px; margin-top: 0px; border-bottom: 1px solid var(--border-color); padding-bottom: 25px; width: 100%;'>
+    <div style='display: flex; align-items: center; gap: 20px;'>
+        <div style='font-size: 4rem; line-height: 1;'>📊</div>
+        <div style='font-size: 4rem; font-weight: 900; letter-spacing: -0.02em; word-spacing: 0.35em; line-height: 1.0; 
+                    background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(165,180,252,0.9) 40%, rgba(56,189,248,0.8) 100%); 
+                    -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; 
+                    text-shadow: 0px 4px 30px rgba(99,102,241,0.25); white-space: nowrap;'>
+            INTELLIGENT ANALYTICS PLATFORM
         </div>
     </div>
-    """, unsafe_allow_html=True)
-
-    st.divider()
-
-    if st.button("🔄  Refresh Data", use_container_width=True):
-        st.cache_data.clear()
-        st.rerun()
-
-    st.markdown("""
-    <div style='margin-top: 20px; padding: 12px; background: rgba(99,102,241,0.08);
-                border: 1px solid rgba(99,102,241,0.15); border-radius: 10px;'>
-        <div style='font-size: 0.7rem; color: #6366f1; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em;'>DATA RANGE</div>
-        <div style='font-size: 0.85rem; color: #94a3b8; font-weight: 600;'>Jan 2017 – Aug 2018</div>
-        <div style='font-size: 0.72rem; color: #475569; margin-top: 2px;'>Olist E-Commerce • Brazil</div>
+    <div style='font-size: 1.25rem; color: #64748b; margin-top: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;'>
+        Brazilian E-Commerce · 2017–2018
     </div>
-    """, unsafe_allow_html=True)
-
+</div>
+""", unsafe_allow_html=True)
 
 # ── Tabs ──────────────────────────────────────────────────────────────────────
 
@@ -237,12 +203,21 @@ tab1, tab2, tab3, tab4 = st.tabs([
 with tab1:
     # Hero banner
     st.markdown("""
-    <div class="hero-banner">
-        <p class="hero-title">Business Overview</p>
-        <p class="hero-subtitle">Brazilian E-Commerce · 2017–2018 · Live from AWS Athena</p>
-        <span class="hero-pill">✅ Live Data</span>
-        <span class="hero-pill">🗄️ Athena</span>
-        <span class="hero-pill">🔄 dbt</span>
+    <div style="background-color: var(--background-color); border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); margin-bottom: 25px; overflow-x: auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+        <div style="font-size: 0.75rem; font-weight: 700; color: #6366f1; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 15px;">End-to-End Data Pipeline Architecture</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; min-width: 800px; padding: 10px 0;">
+            <div style="text-align: center;"><div style="font-size: 2rem; margin-bottom: 5px;">🐍</div><div style="font-size: 0.85rem; font-weight: 700; color: var(--text-color);">Fake Data Script</div></div>
+            <div style="color: #94a3b8; font-size: 1.2rem; font-weight: bold;">→</div>
+            <div style="text-align: center;"><div style="font-size: 2rem; margin-bottom: 5px;">☁️</div><div style="font-size: 0.85rem; font-weight: 700; color: var(--text-color);">AWS S3 & Athena</div></div>
+            <div style="color: #94a3b8; font-size: 1.2rem; font-weight: bold;">→</div>
+            <div style="text-align: center;"><div style="font-size: 2rem; margin-bottom: 5px;">🔄</div><div style="font-size: 0.85rem; font-weight: 700; color: var(--text-color);">dbt Transforms</div></div>
+            <div style="color: #94a3b8; font-size: 1.2rem; font-weight: bold;">→</div>
+            <div style="text-align: center;"><div style="font-size: 2rem; margin-bottom: 5px;">🤖</div><div style="font-size: 0.85rem; font-weight: 700; color: var(--text-color);">XGBoost Models</div></div>
+            <div style="color: #94a3b8; font-size: 1.2rem; font-weight: bold;">→</div>
+            <div style="text-align: center;"><div style="font-size: 2rem; margin-bottom: 5px;">🧠</div><div style="font-size: 0.85rem; font-weight: 700; color: var(--text-color);">Llama AI Agent</div></div>
+            <div style="color: #94a3b8; font-size: 1.2rem; font-weight: bold;">→</div>
+            <div style="text-align: center;"><div style="font-size: 2rem; margin-bottom: 5px;">📊</div><div style="font-size: 0.85rem; font-weight: 700; color: var(--text-color);">Live Dashboard</div></div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -422,8 +397,8 @@ with tab3:
 
     # Model score summary
     mc1, mc2, mc3 = st.columns(3)
-    mc1.metric("Churn Model AUC",  "~0.85", "XGBoost + SHAP")
-    mc2.metric("CLV Model R²",     "0.925", "XGBoost Regression")
+    mc1.metric("Churn Model AUC",  "~85%", "XGBoost + SHAP")
+    mc2.metric("CLV Model R²",     "92.5%", "XGBoost Regression")
     mc3.metric("Recommender",      "20 Categories", "Cosine Similarity")
 
     st.markdown("<br>", unsafe_allow_html=True)
