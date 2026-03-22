@@ -16,9 +16,12 @@ An end-to-end, FAANG-ready data product built for an e-commerce business. This p
 
 The Intelligent Analytics Platform takes raw e-commerce data (using the Brazilian Olist dataset) and transforms it into a live, interactive dashboard. It allows business stakeholders to view live KPIs, understand machine learning predictions for customer behavior, and even interact with their data using plain English via an integrated LLM.
 
-### ✨ Key Features
-1. **Live Business Dashboard:** An interactive, dark-themed Streamlit UI displaying revenue trends, top categories, and geographical sales mapping.
-2. **Machine Learning Insights:**
+### ✨ Key Features & Frontend Architecture
+1. **Enterprise Single-Page Application (SPA):** A completely custom, edge-to-edge responsive dashboard. Streamlit's native sidebar and headers were dismantled using advanced CSS overrides to create a seamless, highly immersive HD interface.
+2. **Fluid Typography & Glassmorphism:** Implements dynamic viewport width (`vw`) typography, allowing the platform's headers to mathematically scale edge-to-edge across any ultra-wide monitor. Features custom transparent "ghost" buttons and floating, borderless tabs.
+3. **Interactive Data Pipeline Visualization:** A visually stunning, horizontal architecture flow diagram (`Fake Data → AWS S3 → dbt → XGBoost → Llama 3`) built directly into the main Overview tab UI.
+4. **Live Business Operations:** Displays active revenue trends, top category volume, and geographical sales modeling pulling directly from AWS Athena.
+5. **Machine Learning Insights:**
    * **Churn Prediction:** An XGBoost classification model predicting which customers are at risk of leaving, explained via SHAP values.
    * **Customer Lifetime Value (CLV):** An XGBoost regression model predicting the future monetary value of customer segments.
    * **Product Recommender:** A collaborative filtering system suggesting untried product categories to existing customers.
